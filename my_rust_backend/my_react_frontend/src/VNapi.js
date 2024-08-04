@@ -35,11 +35,13 @@ export const getnovel = async (title, fields) => {
     }
   };
     //this is the function that we call from our app.js it calls the function above to get the info
-  const VisualNovelSearch = ({ title, check, id, setId }) => {
+  const VisualNovelSearch = ({ title, check, id}) => {
         //these are variables, we use them to set the visualnovel after we get it
     const [visualNovel, setVisualNovel] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [test, setTest] = useState("test");
+  
   
     useEffect(() => {
             //this funcion is called whenever VisualNovelSearch is called and it calls the function to get the api data
@@ -51,8 +53,20 @@ export const getnovel = async (title, fields) => {
           //the api sends back an array of novels that match the title, so we check if the novel exists and we set it to the first in the array
           if (data.results.length > 0) {
                         //then we set our id to the id of the novel, this is the variable sent in by app.js to send back to the rust server
-            setVisualNovel(data.results[0]); 
-            setId(data.results[0].id.toString());
+              setVisualNovel(data.results[0]);
+            
+              for (let i = 0; i < data.results.length; i++) {
+
+                setTest(data.results[i].id.toString().substring(1));
+
+                if(test.localeCompare(id) == 0 || title.localeCompare(data.results[i].title) == 0){
+                 
+                  setVisualNovel(data.results[i]);
+                  
+                }
+              }
+  
+
           } else {
              //these are errors if the post request fails
             setError('Visual novel not found');
@@ -69,6 +83,8 @@ export const getnovel = async (title, fields) => {
      //these are errors if the post request fails
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
+
+
     if(check){
       return (
                 //render on screen the title, releasedate, rating, image and description
@@ -79,6 +95,7 @@ export const getnovel = async (title, fields) => {
           {visualNovel.image && <img src={visualNovel.image.thumbnail} alt={visualNovel.title} />}
           <h3>description:</h3>
           <h5>{visualNovel.description}</h5>
+
           
           
           

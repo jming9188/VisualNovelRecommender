@@ -297,6 +297,7 @@ function App() {
         <p>No path</p>
       ) : (
         Result.map((str, index) => (
+          
           <VisualNovelSearch title={str} check={false} id = {id1} setId={setId1}/>
         ))
       )}
